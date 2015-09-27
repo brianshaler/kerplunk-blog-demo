@@ -8,15 +8,15 @@ module.exports = React.createFactory React.createClass
   getInitialState: ->
     posts = if @props.posts?.length > 0
       @props.posts
-    else if @props.post?.type == 'post'
-      [@props.post]
+    # else if @props.post?.type == 'post'
+    #   [@props.post]
     else
       []
 
     pages = if @props.pages?.length > 0
       @props.pages
-    else if @props.post?.type == 'page'
-      [@props.post]
+    # else if @props.post?.type == 'page'
+    #   [@props.post]
     else
       []
 
@@ -37,6 +37,15 @@ module.exports = React.createFactory React.createClass
         _.uniq @state.posts.concat(posts), '_id'
       else
         @state.posts
+      if posts.length == 0
+        @props.request.get "#{@props.blogSettings.baseUrl}.json", {}, (err, data) =>
+          posts = data?.posts
+          return unless posts?.length > 0
+          localStorage.setItem 'blogposts', JSON.stringify posts
+          return unless @isMounted()
+          @setState
+            posts: @sortPosts posts
+        return
       try
         localStorage.setItem 'blogposts', JSON.stringify posts
       catch ex
