@@ -29,25 +29,35 @@ module.exports = React.createFactory React.createClass
 
   componentDidMount: ->
     try
-      posts = JSON.parse localStorage.getItem 'blogposts'
+      storedPosts = JSON.parse localStorage.getItem 'blogposts'
     catch ex
       'nevermind'
-    if @state.posts?.length > 0
-      posts = if posts?.length > 0
-        _.uniq @state.posts.concat(posts), '_id'
+    posts = @state.posts ? []
+    if posts?.length > 0
+      posts = if storedPosts?.length > 0
+        _.uniq posts.concat(storedPosts), '_id'
       else
-        @state.posts
+        posts
       try
         localStorage.setItem 'blogposts', JSON.stringify posts
       catch ex
         'welp, i tried'
         return
     else
-      @props.request.get "#{@props.blogSettings.baseUrl}.json", {}, (err, data) =>
-        posts = data?.posts
+      if posts?.length == 0 and storedPosts?.length > 0
+        @setState
+          posts: @sortPosts storedPosts
+      url = "#{@props.blogSettings.baseUrl}.json"
+      @props.request.get url, {}, (err, data) =>
+        posts = data?.state?.posts
         return unless posts?.length > 0
         localStorage.setItem 'blogposts', JSON.stringify posts
         return unless @isMounted()
+        try
+          localStorage.setItem 'blogposts', JSON.stringify posts
+        catch ex
+          'welp, i tried'
+          return
         @setState
           posts: @sortPosts posts
       return
