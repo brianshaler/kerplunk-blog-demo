@@ -37,20 +37,20 @@ module.exports = React.createFactory React.createClass
         _.uniq @state.posts.concat(posts), '_id'
       else
         @state.posts
-      if posts.length == 0
-        @props.request.get "#{@props.blogSettings.baseUrl}.json", {}, (err, data) =>
-          posts = data?.posts
-          return unless posts?.length > 0
-          localStorage.setItem 'blogposts', JSON.stringify posts
-          return unless @isMounted()
-          @setState
-            posts: @sortPosts posts
-        return
       try
         localStorage.setItem 'blogposts', JSON.stringify posts
       catch ex
         'welp, i tried'
         return
+    else
+      @props.request.get "#{@props.blogSettings.baseUrl}.json", {}, (err, data) =>
+        posts = data?.posts
+        return unless posts?.length > 0
+        localStorage.setItem 'blogposts', JSON.stringify posts
+        return unless @isMounted()
+        @setState
+          posts: @sortPosts posts
+      return
     try
       posts = JSON.parse localStorage.getItem 'blogposts'
     catch ex
