@@ -12,67 +12,21 @@ ReactMarkdownComponent = React.createFactory ReactMarkdownClass
 {DOM} = React
 
 module.exports = React.createFactory React.createClass
-  getInitialState: ->
-    truncatedBody = body = @props.post.body
-
-    if @props.truncate
-      maxLines = 12
-      lines = body.split '\n'
-      usedLines = []
-      count = 0
-      for line in lines
-        break if count >= maxLines
-        usedLines.push line
-        count += 1 + Math.floor line.length / 50
-      truncatedBody = usedLines.join '\n'
-
-    truncate: truncatedBody.length != body.length
-    truncatedBody: truncatedBody
-    body: body
-    postComponents: @postComponents body
-
   onExpand: (e) ->
     e.preventDefault()
     @setState
       truncate: false
 
-  postComponents: (body) ->
-    lines = _.map body.split('\n'), (line) ->
-      return line unless /^\{.+\}$/.test line
-      try
-        obj = JSON.parse line
-      catch err
-        'nothing'
-      return line unless obj?.componentPath?.length > 0
-
-      path: obj.componentPath
-      data: obj.data
-
-    components = []
-    for line in lines
-      if typeof line is 'string'
-        if components.length > 0 and typeof components[components.length-1] is 'string'
-          components[components.length-1] += "#{line}\n"
-        else
-          components.push "#{line}\n"
-      else
-        components.push line
-    components
-
   render: ->
+    RenderPostContent = @props.getComponent 'kerplunk-blog:renderPostContent'
 
-    CustomComponent = if @props.post.attributes?.componentPath?.length > 0
-      # console.log 'get component', @props.post.attributes.componentPath
-      @props.getComponent @props.post.attributes.componentPath
-    else
-      false
     postClass = if /<img/.test @props.post.body
       'format-image'
     else
       'format-post'
 
     DOM.article
-      id: "post-#{@props.post._id}"
+      id: "post-#{@props.post.permalink.replace '/', '-'}"
       className: "hentry #{postClass}"
     ,
       PostHeader
@@ -86,34 +40,7 @@ module.exports = React.createFactory React.createClass
       DOM.div
         className: 'entry-content'
       ,
-        _.map @state.postComponents, (component, index) =>
-          if typeof component is 'string'
-            ReactMarkdownComponent
-              key: index
-              source: if @state.postComponents.length == 1 and typeof @state.postComponents[0] is 'string' and @state.truncate
-                @state.truncatedBody
-              else
-                component
-              escapeHtml: true
-          else
-            Component = @props.getComponent component.path
-            DOM.div
-              key: index
-              className: 'clear clearfix'
-            ,
-              Component _.extend {}, @props, component.data,
-                key: index
-
-        if @state.postComponents.length == 1 and typeof @state.postComponents[0] is 'string' and @state.truncate
-          DOM.p
-            className: 'entry-meta continue-reading'
-          ,
-            DOM.a
-              href: @props.post.permalink
-              onClick: @onExpand
-            , 'Continue reading'
-        else
-          null
+        RenderPostContent _.extend {}, @props, @state
 
         PostMeta
           author: @props.post.author
