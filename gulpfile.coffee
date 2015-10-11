@@ -15,9 +15,6 @@ glut gulp,
       runner: coffeeAmdify
       src: 'src/components/**/*.coffee'
       dest: 'public/components'
-    assets:
-      src: 'assets/**'
-      dest: 'public'
     stylus:
       runner: stylus
       cache: false
