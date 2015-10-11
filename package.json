@@ -2,7 +2,7 @@
   "name": "kerplunk-blog-demo",
   "displayName": "Demo Blog Theme",
   "description": "Demo Blog Theme",
-  "version": "0.0.4",
+  "version": "0.1.0",
   "kerplunk": {
     "dependencies": [
       "kerplunk-blog"
