@@ -1,13 +1,9 @@
 _ = require 'lodash'
 moment = require 'moment'
 React = require 'react'
-ReactMarkdownName = 'react-markdown'
 
 PostHeader = require './postHeader'
 PostMeta = require './postMeta'
-
-ReactMarkdownClass = ReactMarkdown ? require ReactMarkdownName
-ReactMarkdownComponent = React.createFactory ReactMarkdownClass
 
 {DOM} = React
 
