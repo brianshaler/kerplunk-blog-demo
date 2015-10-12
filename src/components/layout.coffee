@@ -69,10 +69,3 @@ module.exports = React.createFactory React.createClass
           ContentComponent _.extend {}, @props,
             key: @props.currentUrl
             buildUrl: @buildUrl
-
-module.exports.scripts = [
-  '/plugins/kerplunk-blog/browserify/react-markdown.js'
-]
-
-# ugh.
-module.exports
