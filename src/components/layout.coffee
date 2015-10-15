@@ -25,6 +25,20 @@ module.exports = React.createFactory React.createClass
     @setState
       showSidebar: !@state.showSidebar
 
+  postClickHandler: (post) ->
+    (e) =>
+      @props.hideSidebar()
+      unless post._id
+        return @props.pushState e
+      @props.pushState e, null,
+        state:
+          post: post
+          blogSettings: @props.blogSettings
+          theme: @props.theme
+          title: post.title
+          layout: @props.layout
+        component: 'kerplunk-blog-demo:showPost'
+
   render: ->
     ContentComponent = @props.getComponent @props.contentComponent
 
@@ -69,3 +83,4 @@ module.exports = React.createFactory React.createClass
           ContentComponent _.extend {}, @props,
             key: @props.currentUrl
             buildUrl: @buildUrl
+            postClickHandler: @postClickHandler

@@ -12,16 +12,16 @@ module.exports = React.createFactory React.createClass
     DOM.header
       className: 'entry-header'
     ,
-      if @props.postType
+      if @props.post.attributes?.type
         DOM.a
           className: 'entry-format'
           href: @props.postTypeUrl
-          onClick: @props.pushState
-          title: "All #{@props.postType} posts"
+          onClick: @props.postClickHandler @props.post
+          title: "All #{@props.post.attributes.type} posts"
         ,
           DOM.span
             className: 'screen-reader-text'
-          , @props.postType
+          , @props.post.attributes.type
       else
         DOM.span
           className: 'entry-format'
@@ -30,8 +30,8 @@ module.exports = React.createFactory React.createClass
         className: 'hentry-title'
       ,
         DOM.a
-          href: @props.permalink
+          href: @props.post.permalink
           onClick: @props.pushState
-          title: @props.title
+          title: @props.post.title
           rel: 'bookmark'
-        , @props.title
+        , @props.post.title
