@@ -20,7 +20,7 @@ module.exports = React.createFactory React.createClass
     else
       []
 
-    # console.log 'initial sort', @props.currentUrl, _.pluck posts, 'title'
+    # console.log 'initial sort', @props.currentUrl, _.map posts, 'title'
 
     posts: @sortPosts posts
     pages: @sortPosts pages
@@ -84,7 +84,7 @@ module.exports = React.createFactory React.createClass
     #     post.title
     #   ]
     # , ['desc', 'desc']
-    # console.log 'posts', posts, _.pluck posts, 'publishedAt'
+    # console.log 'posts', posts, _.map posts, 'publishedAt'
     posts = _.map posts, (post) ->
       post.content = if post.type == 'post'
         DOM.span null,
